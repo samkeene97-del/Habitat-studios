@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Habitat Studios — Rehearsal & Recording</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #070707;
+      --deep:    #0e0e0e;
+      --panel:   #131313;
+      --border:  #222;
+      --muted:   #3a3a3a;
+      --silver:  #777;
+      --white:   #eee8de;
+      --cream:   #c8bfa8;
+      --gold:    #b8924c;
+      --amber:   #d4943a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* GRAIN */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+    }
+
+    /* TICKER */
+    .ticker {
+      background: var(--gold);
+      color: var(--black);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      padding: 7px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-block;
+      animation: ticker 22s linear infinite;
+    }
+    .ticker-track span { margin: 0 3rem; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7,7,7,0.94);
+      backdrop-filter: blur(14px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--silver);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold);
+      color: var(--black) !important;
+      padding: 8px 18px;
+    }
+    .nav-cta:hover { background: var(--amber) !important; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.25;
+    }
+    .hero-wave {
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      height: 100%;
+      opacity: 0.07;
+      animation: wave-drift 30s linear infinite;
+    }
+    @keyframes wave-drift {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-glow-1 {
+      width: 500px; height: 500px;
+      background: rgba(184,146,76,0.11);
+      top: 5%; right: 5%;
+    }
+    .hero-glow-2 {
+      width: 300px; height: 300px;
+      background: rgba(184,146,76,0.06);
+      bottom: 20%; left: 10%;
+    }
+    .hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+    .hero-title .outline {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border);
+      display: block;
+    }
+    .hero-sub {
+      margin-top: 2rem;
+      max-width: 420px;
+      color: var(--silver);
+      font-size: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+    .hero-actions {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+    .hero-stats {
+      position: absolute;
+      right: 3rem;
+      bottom: 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: right;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards;
+    }
+    .hero-stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--silver);
+      text-transform: uppercase;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      padding: 14px 32px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--amber); transform: translateY(-1px); }
+    .btn-ghost {
+      color: var(--silver);
+      padding: 14px 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border: 1px solid var(--muted);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--white); }
+
+    /* MARQUEE */
+    .marquee-divider {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      background: var(--deep);
+    }
+    .marquee-inner {
+      display: inline-block;
+      animation: ticker 18s linear infinite;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .marquee-inner span { margin: 0 2.5rem; }
+    .dot { color: var(--gold); }
+
+    /* SECTIONS */
+    section { padding: 7rem 3rem; }
+    .section-label {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    /* SERVICES */
+    .services { background: var(--deep); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      margin-top: 4rem;
+      border: 1px solid var(--border);
+    }
+    .service-card {
+      background: var(--panel);
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .service-card:hover { background: #181818; }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon { width: 44px; height: 44px; margin-bottom: 1.8rem; }
+    .service-icon svg { width: 100%; height: 100%; }
+    .service-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.8rem;
+    }
+    .service-desc { color: var(--silver); font-size: 12px; line-height: 1.9; }
+    .service-tag {
+      display: inline-block;
+      margin-top: 1.5rem;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      border: 1px solid var(--muted);
+      padding: 4px 10px;
+    }
+
+    /* ENDORSEMENT */
+    .endorsement {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .endorsement-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(22px, 3vw, 34px);
+      color: var(--cream);
+      max-width: 600px;
+      line-height: 1.4;
+    }
+    .endorsement-badge-top {
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--silver);
+      margin-bottom: 0.5rem;
+      text-align: right;
+    }
+    .endorsement-badge-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-align: right;
+    }
+
+    /* WAVEFORM VIZ */
+    .visual-section {
+      height: 280px;
+      background: var(--deep);
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .visual-section svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* HOURS */
+    .hours-section { background: var(--black); }
+    .hours-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      margin-top: 3rem;
+    }
+    .hours-table { border: 1px solid var(--border); }
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row:hover { background: var(--panel); }
+    .hours-day { color: var(--silver); font-size: 11px; letter-spacing: 0.1em; }
+    .hours-time { color: var(--gold); font-size: 11px; }
+    .hours-note { margin-top: 1.5rem; color: var(--muted); font-size: 11px; line-height: 1.9; }
+    .booking-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 3rem;
+    }
+    .booking-box h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+    .booking-box p { color: var(--silver); font-size: 12px; margin-bottom: 2rem; line-height: 1.9; }
+    .booking-box .btn-primary { width: 100%; text-align: center; display: block; }
+
+    /* INSTAGRAM */
+    .insta-section { background: var(--deep); }
+    .insta-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .insta-link { font-size: 11px; color: var(--silver); letter-spacing: 0.15em; }
+    .insta-link a { color: var(--gold); text-decoration: none; }
+    .insta-link a:hover { text-decoration: underline; }
+    .insta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+    }
+    .insta-tile {
+      aspect-ratio: 1;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .insta-tile:hover .insta-overlay { opacity: 1; }
+    .insta-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(184,146,76,0.15);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--white);
+    }
+
+    /* CONTACT */
+    .contact-section { background: var(--black); border-top: 1px solid var(--border); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      margin-top: 3rem;
+    }
+    .contact-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-info-item:first-child { border-top: 1px solid var(--border); }
+    .contact-info-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+    .contact-info-value { font-size: 14px; }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--silver); }
+    .form-input, .form-select, .form-textarea {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+    .form-select option { background: var(--panel); }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* FOOTER */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid var(--border);
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.12em; }
+    .footer-logo span { color: var(--gold); }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 10px; letter-spacing: 0.15em; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { color: var(--muted); font-size: 10px; letter-spacing: 0.1em; }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 700px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .hero { padding: 0 1.5rem 4rem; }
+      .hero-stats { right: 1.5rem; bottom: 4rem; }
+      .hours-layout, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .insta-grid { grid-template-columns: repeat(2,1fr); }
+      footer { padding: 2rem 1.5rem; }
+      .endorsement { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div style="padding-top:64px;">
+    <div class="ticker">
+      <div class="ticker-track">
+        <span>HABITAT STUDIOS</span><span>·</span>
+        <span>REHEARSAL SPACE</span><span>·</span>
+        <span>RECORDING</span><span>·</span>
+        <span>BLACKSTAR ENDORSED</span><span>·</span>
+        <span>BOOK YOUR SPACE</span><span>·</span>
+        <span>10AM – 10PM DAILY</span><span>·</span>
+        <span>@HABITAT.STUDIOS</span><span>·</span>
+        <span>HABITAT STUDIOS</span><span>·</span>
+        <span>REHEARSAL SPACE</span><span>·</span>
+        <span>RECORDING</span><span>·</span>
+        <span>BLACKSTAR ENDORSED</span><span>·</span>
+        <span>BOOK YOUR SPACE</span><span>·</span>
+        <span>10AM – 10PM DAILY</span><span>·</span>
+        <span>@HABITAT.STUDIOS</span><span>·</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#"><span>H</span>ABITAT STUDIOS</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#hours">Hours</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#contact" class="nav-cta">Book Now</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <svg class="hero-wave" viewBox="0 0 1440 600" preserveAspectRatio="none">
+        <polyline fill="none" stroke="#b8924c" stroke-width="1.5"
+          points="0,300 30,270 60,330 90,250 120,350 150,265 180,340 210,280 240,320 270,240 300,360 330,272 360,338 390,255 420,355 450,268 480,340 510,282 540,318 570,248 600,358 630,275 660,335 690,258 720,348 750,265 780,340 810,278 840,322 870,245 900,362 930,270 960,338 990,252 1020,358 1050,268 1080,342 1110,278 1140,325 1170,248 1200,355 1230,272 1260,338 1290,255 1320,352 1350,265 1380,338 1410,278 1440,328 1440,600 0,600"/>
+        <polyline fill="none" stroke="#b8924c" stroke-width="0.7" opacity="0.35"
+          points="0,320 30,295 60,345 90,275 120,365 150,288 180,355 210,300 240,335 270,262 300,372 330,290 360,350 390,272 420,368 450,285 480,352 510,298 540,330 570,265 600,368 630,292 660,348 690,272 720,360 750,282 780,352 810,292 840,335 870,262 900,372 930,288 960,350 990,268 1020,370 1050,285 1080,355 1110,292 1140,338 1170,265 1200,368 1230,288 1260,352 1290,268 1320,365 1350,282 1380,350 1410,292 1440,342 1440,600 0,600"/>
+      </svg>
+    </div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+
+    <p class="hero-eyebrow">Rehearsal Space &amp; Recording Studio</p>
+    <h1 class="hero-title">
+      HABITAT<br>
+      <span class="outline">STUDIOS</span>
+    </h1>
+    <p class="hero-sub">
+      A space built for musicians. Rehearse, record, and create
+      in a professional environment with premium gear —
+      open every day, 10am to 10pm.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Book Your Space</a>
+      <a href="#services" class="btn-ghost">Explore Spaces</a>
+    </div>
+
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">2K+</div>
+        <div class="hero-stat-label">Followers</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">12H</div>
+        <div class="hero-stat-label">Daily Access</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">162</div>
+        <div class="hero-stat-label">Posts</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-divider">
+    <div class="marquee-inner">
+      <span>REHEARSAL</span><span class="dot">◆</span>
+      <span>RECORDING</span><span class="dot">◆</span>
+      <span>BLACKSTAR AMPLIFICATION</span><span class="dot">◆</span>
+      <span>ENDORSED</span><span class="dot">◆</span>
+      <span>BOOK YOUR SPACE</span><span class="dot">◆</span>
+      <span>10AM – 10PM</span><span class="dot">◆</span>
+      <span>REHEARSAL</span><span class="dot">◆</span>
+      <span>RECORDING</span><span class="dot">◆</span>
+      <span>BLACKSTAR AMPLIFICATION</span><span class="dot">◆</span>
+      <span>ENDORSED</span><span class="dot">◆</span>
+      <span>BOOK YOUR SPACE</span><span class="dot">◆</span>
+      <span>10AM – 10PM</span><span class="dot">◆</span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="services reveal" id="services">
+    <p class="section-label">What We Offer</p>
+    <h2 class="section-title">OUR SPACES</h2>
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 44 44" fill="none">
+            <rect x="4" y="28" width="5" height="12" fill="#b8924c" opacity="0.9"/>
+            <rect x="11" y="20" width="5" height="20" fill="#b8924c" opacity="0.65"/>
+            <rect x="18" y="24" width="5" height="16" fill="#b8924c" opacity="0.8"/>
+            <rect x="25" y="14" width="5" height="26" fill="#b8924c"/>
+            <rect x="32" y="21" width="5" height="19" fill="#b8924c" opacity="0.65"/>
+          </svg>
+        </div>
+        <div class="service-name">Rehearsal Space</div>
+        <p class="service-desc">Fully equipped rooms for your band to plug in and play. Amps, drums, PA — everything you need at full volume.</p>
+        <span class="service-tag">Available Daily</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="14" stroke="#b8924c" stroke-width="1.5"/>
+            <circle cx="22" cy="22" r="8" stroke="#b8924c" stroke-width="1" opacity="0.5"/>
+            <circle cx="22" cy="22" r="3" fill="#b8924c"/>
+            <line x1="22" y1="4" x2="22" y2="10" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="22" y1="34" x2="22" y2="40" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="4" y1="22" x2="10" y2="22" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="34" y1="22" x2="40" y2="22" stroke="#b8924c" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="service-name">Recording</div>
+        <p class="service-desc">Capture your sound with quality monitoring and acoustically treated rooms. Built for artists who take recording seriously.</p>
+        <span class="service-tag">By Appointment</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 44 44" fill="none">
+            <rect x="8" y="12" width="28" height="20" rx="1" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="8" y1="18" x2="36" y2="18" stroke="#b8924c" stroke-width="0.7" opacity="0.4"/>
+            <circle cx="14" cy="15" r="1.5" fill="#b8924c" opacity="0.8"/>
+            <circle cx="20" cy="15" r="1.5" fill="#b8924c" opacity="0.4"/>
+            <circle cx="26" cy="15" r="1.5" fill="#b8924c" opacity="0.6"/>
+            <line x1="13" y1="22" x2="13" y2="28" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="19" y1="24" x2="19" y2="28" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="25" y1="20" x2="25" y2="28" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="31" y1="23" x2="31" y2="28" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="16" y1="34" x2="28" y2="34" stroke="#b8924c" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="service-name">Backline Gear</div>
+        <p class="service-desc">Blackstar Amplification endorsed. Access premium backline — travel light and still perform at your best.</p>
+        <span class="service-tag">Blackstar Endorsed</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 44 44" fill="none">
+            <rect x="10" y="8" width="24" height="28" rx="1" stroke="#b8924c" stroke-width="1.5"/>
+            <line x1="15" y1="16" x2="29" y2="16" stroke="#b8924c" stroke-width="1" opacity="0.5"/>
+            <line x1="15" y1="21" x2="29" y2="21" stroke="#b8924c" stroke-width="1" opacity="0.4"/>
+            <line x1="15" y1="26" x2="23" y2="26" stroke="#b8924c" stroke-width="1" opacity="0.4"/>
+            <circle cx="22" cy="38" r="2.5" stroke="#b8924c" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="service-name">Hourly Booking</div>
+        <p class="service-desc">Flexible hourly rates, no long-term commitments. Perfect for one-off sessions or locking in a regular weekly slot.</p>
+        <span class="service-tag">Book Online</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ENDORSEMENT -->
+  <div class="endorsement reveal">
+    <p class="endorsement-text">"Where serious musicians come to build their sound."</p>
+    <div>
+      <div class="endorsement-badge-top">Official Endorsement</div>
+      <div class="endorsement-badge-name">BLACKSTAR<br>AMPLIFICATION</div>
+    </div>
+  </div>
+
+  <!-- WAVEFORM VISUAL -->
+  <div class="visual-section">
+    <svg viewBox="0 0 1440 280" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#b8924c" stop-opacity="0.16"/>
+          <stop offset="100%" stop-color="#b8924c" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="0" y1="70" x2="1440" y2="70" stroke="#1a1a1a" stroke-width="1"/>
+      <line x1="0" y1="140" x2="1440" y2="140" stroke="#1a1a1a" stroke-width="1"/>
+      <line x1="0" y1="210" x2="1440" y2="210" stroke="#1a1a1a" stroke-width="1"/>
+      <line x1="360" y1="0" x2="360" y2="280" stroke="#1a1a1a" stroke-width="1"/>
+      <line x1="720" y1="0" x2="720" y2="280" stroke="#1a1a1a" stroke-width="1"/>
+      <line x1="1080" y1="0" x2="1080" y2="280" stroke="#1a1a1a" stroke-width="1"/>
+      <path fill="url(#wg)" d="M0,140 C50,120 80,170 130,110 C180,50 210,190 260,135 C310,80 340,175 390,120 C440,65 470,185 520,128 C570,71 600,178 650,122 C700,66 730,180 780,124 C830,68 860,176 910,120 C960,64 990,178 1040,122 C1090,66 1120,174 1170,118 C1220,62 1250,176 1300,120 C1350,64 1390,172 1440,118 L1440,280 L0,280 Z"/>
+      <path fill="none" stroke="#b8924c" stroke-width="1.5"
+        d="M0,140 C50,120 80,170 130,110 C180,50 210,190 260,135 C310,80 340,175 390,120 C440,65 470,185 520,128 C570,71 600,178 650,122 C700,66 730,180 780,124 C830,68 860,176 910,120 C960,64 990,178 1040,122 C1090,66 1120,174 1170,118 C1220,62 1250,176 1300,120 C1350,64 1390,172 1440,118"/>
+      <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+        font-family="'Bebas Neue', sans-serif" font-size="80" fill="#b8924c" opacity="0.03" letter-spacing="18">HABITAT</text>
+    </svg>
+  </div>
+
+  <!-- HOURS -->
+  <section class="hours-section reveal" id="hours">
+    <p class="section-label">Access</p>
+    <h2 class="section-title">HOURS & BOOKING</h2>
+    <div class="hours-layout">
+      <div>
+        <div class="hours-table">
+          <div class="hours-row"><span class="hours-day">Monday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span class="hours-day">Tuesday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span class="hours-day">Wednesday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span class="hours-day">Thursday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span class="hours-day">Friday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time">10:00 AM – 10:00 PM</span></div>
+        </div>
+        <p class="hours-note">Open 7 days a week. Last session begins at 9:00 PM.<br>Public holidays may vary — check Instagram for updates.</p>
+      </div>
+      <div class="booking-box">
+        <h3>READY TO BOOK?</h3>
+        <p>Reserve your slot directly. Hourly rates for rehearsal rooms and recording sessions. Follow <strong style="color:var(--gold)">@habitat.studios</strong> for last-minute availability and updates.</p>
+        <a href="https://www.instagram.com/habitat.studios/" target="_blank" class="btn-primary">Book Your Space Now</a>
+        <p style="margin-top:1.2rem; color:var(--muted); font-size:11px;">Or DM us on Instagram for enquiries.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM SECTION -->
+  <section class="insta-section reveal" id="gallery">
+    <div class="insta-header">
+      <div>
+        <p class="section-label">Follow Along</p>
+        <h2 class="section-title">@HABITAT.STUDIOS</h2>
+      </div>
+      <div class="insta-link"><a href="https://www.instagram.com/habitat.studios/" target="_blank">View on Instagram →</a></div>
+    </div>
+    <div class="insta-grid">
+      <!-- Abstract SVG tiles representing the feed -->
+      <div class="insta-tile" style="background:#0f0d09;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <rect x="10" y="35" width="7" height="45" fill="#b8924c" opacity="0.35"/>
+          <rect x="20" y="25" width="7" height="55" fill="#b8924c" opacity="0.55"/>
+          <rect x="30" y="30" width="7" height="50" fill="#b8924c" opacity="0.42"/>
+          <rect x="40" y="18" width="7" height="62" fill="#b8924c" opacity="0.75"/>
+          <rect x="50" y="26" width="7" height="54" fill="#b8924c" opacity="0.48"/>
+          <rect x="60" y="33" width="7" height="47" fill="#b8924c" opacity="0.32"/>
+          <rect x="70" y="40" width="7" height="40" fill="#b8924c" opacity="0.28"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#0c0c10;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <circle cx="45" cy="45" r="32" stroke="#b8924c" stroke-width="0.8" opacity="0.3"/>
+          <circle cx="45" cy="45" r="22" stroke="#b8924c" stroke-width="0.8" opacity="0.45"/>
+          <circle cx="45" cy="45" r="12" stroke="#b8924c" stroke-width="0.8" opacity="0.6"/>
+          <circle cx="45" cy="45" r="3" fill="#b8924c" opacity="0.8"/>
+          <line x1="45" y1="10" x2="45" y2="24" stroke="#b8924c" stroke-width="0.8" opacity="0.4"/>
+          <line x1="45" y1="66" x2="45" y2="80" stroke="#b8924c" stroke-width="0.8" opacity="0.4"/>
+          <line x1="10" y1="45" x2="24" y2="45" stroke="#b8924c" stroke-width="0.8" opacity="0.4"/>
+          <line x1="66" y1="45" x2="80" y2="45" stroke="#b8924c" stroke-width="0.8" opacity="0.4"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#100e08;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <polyline points="5,65 18,42 28,55 38,28 48,50 58,35 68,55 78,40 88,48" fill="none" stroke="#b8924c" stroke-width="1.4" opacity="0.6"/>
+          <polyline points="5,72 18,52 28,62 38,38 48,58 58,44 68,62 78,50 88,56" fill="none" stroke="#b8924c" stroke-width="0.7" opacity="0.28"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#0e0e0e;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <rect x="22" y="14" width="46" height="50" rx="2" stroke="#b8924c" stroke-width="1" opacity="0.4"/>
+          <rect x="28" y="20" width="34" height="32" fill="#b8924c" opacity="0.06"/>
+          <line x1="22" y1="30" x2="68" y2="30" stroke="#b8924c" stroke-width="0.6" opacity="0.3"/>
+          <line x1="22" y1="40" x2="68" y2="40" stroke="#b8924c" stroke-width="0.6" opacity="0.2"/>
+          <circle cx="45" cy="74" r="6" stroke="#b8924c" stroke-width="1" opacity="0.4"/>
+          <line x1="35" y1="82" x2="55" y2="82" stroke="#b8924c" stroke-width="1" opacity="0.4"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#0a0c10;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <path d="M15,75 C25,45 40,60 45,35 C50,10 65,55 75,30" fill="none" stroke="#b8924c" stroke-width="1.3" opacity="0.55"/>
+          <circle cx="15" cy="75" r="3" fill="#b8924c" opacity="0.55"/>
+          <circle cx="45" cy="35" r="3" fill="#b8924c" opacity="0.55"/>
+          <circle cx="75" cy="30" r="3" fill="#b8924c" opacity="0.55"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#100a08;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <line x1="15" y1="15" x2="75" y2="75" stroke="#b8924c" stroke-width="0.5" opacity="0.18"/>
+          <line x1="75" y1="15" x2="15" y2="75" stroke="#b8924c" stroke-width="0.5" opacity="0.18"/>
+          <rect x="22" y="22" width="46" height="46" stroke="#b8924c" stroke-width="0.8" opacity="0.3"/>
+          <rect x="32" y="32" width="26" height="26" stroke="#b8924c" stroke-width="0.8" opacity="0.45"/>
+          <rect x="40" y="40" width="10" height="10" fill="#b8924c" opacity="0.55"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#0d100a;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <path d="M20,70 Q35,20 50,52 Q65,84 80,30" fill="none" stroke="#b8924c" stroke-width="1.3" opacity="0.58"/>
+          <line x1="10" y1="45" x2="80" y2="45" stroke="#b8924c" stroke-width="0.4" opacity="0.15"/>
+          <circle cx="20" cy="70" r="3" fill="#b8924c" opacity="0.5"/>
+          <circle cx="50" cy="52" r="3" fill="#b8924c" opacity="0.5"/>
+          <circle cx="80" cy="30" r="3" fill="#b8924c" opacity="0.5"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+      <div class="insta-tile" style="background:#0e0e0e;">
+        <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+          <text x="45" y="52" text-anchor="middle" font-family="'Bebas Neue', sans-serif"
+            font-size="32" fill="#b8924c" opacity="0.3" letter-spacing="2">HS</text>
+          <rect x="14" y="14" width="62" height="62" stroke="#b8924c" stroke-width="0.6" opacity="0.18"/>
+          <line x1="14" y1="45" x2="76" y2="45" stroke="#b8924c" stroke-width="0.4" opacity="0.15"/>
+          <line x1="45" y1="14" x2="45" y2="76" stroke="#b8924c" stroke-width="0.4" opacity="0.15"/>
+        </svg>
+        <div class="insta-overlay">VIEW POST</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section reveal" id="contact">
+    <p class="section-label">Get In Touch</p>
+    <h2 class="section-title">MAKE A BOOKING</h2>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-info-item">
+          <span class="contact-info-label">Instagram</span>
+          <span class="contact-info-value">@habitat.studios</span>
+        </div>
+        <div class="contact-info-item">
+          <span class="contact-info-label">Hours</span>
+          <span class="contact-info-value">10:00 AM – 10:00 PM, Daily</span>
+        </div>
+        <div class="contact-info-item">
+          <span class="contact-info-label">Services</span>
+          <span class="contact-info-value">Rehearsal Space &amp; Recording</span>
+        </div>
+        <div class="contact-info-item">
+          <span class="contact-info-label">Endorsement</span>
+          <span class="contact-info-value">Blackstar Amplification</span>
+        </div>
+        <p style="margin-top:2rem; color:var(--silver); font-size:11px; line-height:2.1;">
+          For the fastest response, DM us directly on Instagram.<br>
+          We'll confirm your booking and send all the details.
+        </p>
+      </div>
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-input" type="text" placeholder="Your name" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="your@email.com" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Space</label>
+          <select class="form-select">
+            <option>Rehearsal Room</option>
+            <option>Recording Session</option>
+            <option>General Enquiry</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Duration</label>
+            <select class="form-select">
+              <option>1 Hour</option>
+              <option>2 Hours</option>
+              <option>3 Hours</option>
+              <option>4+ Hours</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" placeholder="Any additional info..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="border:none;cursor:pointer;width:100%;text-align:center;">
+          Send Booking Request
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo"><span>H</span>ABITAT STUDIOS</div>
+    <ul class="footer-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#hours">Hours</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="https://www.instagram.com/habitat.studios/" target="_blank">Instagram</a></li>
+    </ul>
+    <span class="footer-copy">© 2025 Habitat Studios. All rights reserved.</span>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Form
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.textContent = 'Request Sent ✓';
+      btn.style.background = '#333';
+      btn.disabled = true;
+    }
+  </script>
+</body>
+</html>
